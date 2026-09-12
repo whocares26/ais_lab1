@@ -7,7 +7,7 @@ namespace db {
             m_promt(promt), m_value(value) {}
         void setValue(const std::string& val);
         const std::string& sgetValue();
-        const std::string& getPsromt();
+        const std::string& getPromt();
     private:
         std::string m_promt;
         std::string m_value;
