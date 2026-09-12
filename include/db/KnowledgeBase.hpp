@@ -3,6 +3,7 @@
 #include <vector>
 #include <unordered_map>
 #include "Rule.hpp"
+#include "Object.hpp"
 namespace db {
     inline const std::string db_path = "../data/rules.json";
     class KnowledgeBase {

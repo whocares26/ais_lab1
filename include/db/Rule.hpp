@@ -2,10 +2,11 @@
 #include <string>
 #include "Object.hpp"
 #include <vector>
+#include "Fact.hpp"
 namespace db {
     struct Rule {
-        std::vector<Object> m_condition;
-        Object m_result;
+        std::vector<Fact> m_condition;
+        Fact m_result;
         int m_id;
     };
 }
