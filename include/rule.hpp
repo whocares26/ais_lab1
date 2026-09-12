@@ -4,12 +4,15 @@
 #include <vector>
 namespace db {
     class Rule {
-        std::vector<Object> m_condition;
-        db::Object m_result;
-        int m_id;
     public:
-        void setValue(std::string val);
-        std::string getValue();
-        std::string getPromt();
+        Rule(int id, Object result, std::vector<Object> condition) :
+            m_id(id), m_result(result), m_condition(condition) {}
+        const std::vector<Object> getCondition();
+        const int getId();
+        const getResult();
+    private:
+        std::vector<Object> m_condition;
+        Object m_result;
+        int m_id;
     };
 }
