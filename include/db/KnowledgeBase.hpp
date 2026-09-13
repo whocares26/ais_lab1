@@ -2,8 +2,8 @@
 #include <string>
 #include <vector>
 #include <unordered_map>
-#include "Rule.hpp"
-#include "Object.hpp"
+#include "db/Rule.hpp"
+#include "db/Object.hpp"
 namespace db {
     inline const std::string db_path = "../data/rules.json";
     class KnowledgeBase {
@@ -12,7 +12,7 @@ namespace db {
         const std::vector<Rule>& getRules() const;
         const std::unordered_map<std::string, Object>& getObjects() const;
         bool removeRule(int id);
-        bool replaceRule(int id, const Rule& rule); // изменение
+        bool replaceRule(int id, const Rule& rule); // изменение (замена)
         bool addRule(const Rule& rule);
         const Rule* findRule(int id) const;
         bool save() const;
@@ -21,5 +21,6 @@ namespace db {
         std::vector<Rule> m_rules;
         std::unordered_map<std::string, Object> m_objects;
         std::unordered_map<std::string, std::string> m_initial_facts;
+        std::vector<std::string> m_goal_objects;
     };
 }
