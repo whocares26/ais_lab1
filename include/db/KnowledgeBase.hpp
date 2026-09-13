@@ -17,6 +17,8 @@ namespace db {
         const Rule* findRule(int id) const;
         bool save() const;
         const std::unordered_map<std::string, std::string>& getInitFacts() const;
+        bool addValue(const std::string& objName, const std::string& value);
+        bool addObject(const std::string& name, const Object& obj);
     private:
         std::vector<Rule> m_rules;
         std::unordered_map<std::string, Object> m_objects;

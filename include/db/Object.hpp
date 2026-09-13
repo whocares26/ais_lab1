@@ -7,12 +7,12 @@ namespace db {
     struct Object {
         std::string m_prompt;
         std::vector<std::string> m_values;
-        bool multi;
+        bool m_multi;
     };
 
     inline void from_json(const nlohmann::json& j, Object& obj) {
         obj.m_prompt = j.value("prompt", "");
         j.at("values").get_to(obj.m_values);
-        j.at("multi").get_to(obj.multi);
+        j.at("multi").get_to(obj.m_multi);
     }
 }
