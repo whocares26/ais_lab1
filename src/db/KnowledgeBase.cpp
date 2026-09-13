@@ -26,4 +26,7 @@ namespace db {
         }
         return 0;
     }
+    const std::vector<Rule>& KnowledgeBase::getRules() const {
+        return m_rules;
+    }
 }
