@@ -30,11 +30,8 @@ int main() {
 
             switch (choice) {
                 case 1: // 1. Показать правила\n
-                    {
-                        auto rulesVector = knowledgeBase->getRules();
-                        for (const auto& rule : rulesVector)
-                            std::cout<<rule.m_id<<". "<<toString(rule)<<std::endl;
-                    }
+                    for (const auto& rule : knowledgeBase->getRules())
+                        std::cout<<rule.m_id<<". "<<toString(rule)<<std::endl;
                     break;
                 case 2:
                     // 2. Добавить правило\n"
