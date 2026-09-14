@@ -19,6 +19,7 @@ namespace db {
         const std::unordered_map<std::string, std::string>& getInitFacts() const;
         bool addValue(const std::string& objName, const std::string& value);
         bool addObject(const std::string& name, const Object& obj);
+        const std::vector<std::string>& getGoalObjects() const;
     private:
         std::vector<Rule> m_rules;
         std::unordered_map<std::string, Object> m_objects;

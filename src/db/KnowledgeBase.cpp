@@ -82,4 +82,37 @@ namespace db {
         }
         return true;
     }
+    const std::unordered_map<std::string, std::string>& KnowledgeBase::getInitFacts() const {
+        return m_initial_facts;
+    }
+    const Rule* KnowledgeBase::findRule(int id) const {
+        for (const auto& rule : m_rules) {
+            if (rule.m_id == id) {
+                return &rule;
+            }
+        }
+        return nullptr;
+    }
+    bool KnowledgeBase::removeRule(int id) {
+        for (auto it = m_rules.begin(); it != m_rules.end(); ++it) {
+            if (it->m_id == id) {
+                m_rules.erase(it);
+                return save();
+            }
+        }
+        return false;
+    }
+    bool KnowledgeBase::replaceRule(int id, const Rule& rule) {
+        for (auto it = m_rules.begin(); it != m_rules.end(); ++it) {
+            if (it->m_id == id) {
+                *it = rule;
+                it->m_id = id;
+                return save();
+            }
+        }
+        return false;
+    }
+    const std::vector<std::string>& KnowledgeBase::getGoalObjects() const {
+        return m_goal_objects;
+    }
 }
