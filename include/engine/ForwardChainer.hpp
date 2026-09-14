@@ -6,11 +6,15 @@
 #include "db/Object.hpp"
 #include "db/KnowledgeBase.hpp"
 #include "db/WorkingMemory.hpp"
-namespace en {
+
+namespace engine {
     class ForwardChainer {
     public:
-        bool run();
+        ForwardChainer(const db::KnowledgeBase& kb, db::WorkingMemory& wm);
+        void run();
     private:
-        std::unordered_map<std::string, std::string> results;
+        const db::KnowledgeBase& m_kb;
+        db::WorkingMemory& m_wm;
+        std::set<std::string> m_unknown;   // объекты, про которые пользователь сказал "не знаю"
     };
 }

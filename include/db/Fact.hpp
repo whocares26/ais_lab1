@@ -11,6 +11,10 @@ namespace db {
         return fact.m_object + "=" + fact.m_value;
     }
 
+    inline Fact toFact(std::string obj, std::string val) {
+        return {obj, val};
+    }
+
     inline void from_json(const nlohmann::json& j, Fact& fact) {
         j.at("object").get_to(fact.m_object);
         j.at("value").get_to(fact.m_value);

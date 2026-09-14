@@ -137,19 +137,64 @@ int main() {
             }
 
             case 3: {
+                // "3. Изменить правило\n"
                 // TODO: дописать kb.save(), показать правила, спросить id,
                 // собрать новое правило, knowledgeBase->replaceRule(id, rule)
+                const auto& list = knowledgeBase->getRules();
+                for (const auto& rule : list)
+                    std::cout << rule.m_id << ". " << toString(rule) << "\n";
+                int id = -1; 
+                while (knowledgeBase->findRule(id) == nullptr) {
+                    std::cout << "Введите ID правила: ";
+                    std::string line;
+                    std::getline(std::cin, line);
+                    try { id = std::stoi(line); } catch (...) { id = -1; }
+                    if (knowledgeBase->findRule(id) == nullptr)
+                        std::cout << "Нет правила с таким ID\n";
+                }
+
+                db::Rule rule;
+                std::cout << "ВВОД УСЛОВИЯ\n";
+                while (true) {
+                    rule.m_condition.push_back(readFact(*knowledgeBase));
+                    std::cout << "Нужен ли ещё факт в условие?\n"
+                                << "1. Да\n"
+                                << "2. Нет\n";
+                    if (readChoice(1, 2) == 2)
+                        break;
+                }
+                std::cout << "ВВОД ЗАКЛЮЧЕНИЯ\n";
+                rule.m_result = readFact(*knowledgeBase);
+                if (!knowledgeBase->replaceRule(id, rule)) {
+                    std::cerr<<"Ошибка при изменении правила!";
+                }       
                 break;
             }
 
             case 4: {
-                // TODO: показать правила, спросить id,
-                // knowledgeBase->removeRule(id)
+                for (const auto& rule : knowledgeBase->getRules();)
+                    std::cout << rule.m_id << ". " << toString(rule) << "\n";
+                int id = -1; 
+                while (knowledgeBase->findRule(id) == nullptr) {
+                    std::cout << "Введите ID правила: ";
+                    std::string line;
+                    std::getline(std::cin, line);
+                    try { id = std::stoi(line); } catch (...) { id = -1; }
+                    if (knowledgeBase->findRule(id) == nullptr)
+                        std::cout << "Нет правила с таким ID\n";
+                }
+                if (!knowledgeBase->removeRule(id)) {
+                    std::cout <<"Ошибка при удалении правила по ID\n";
+                }
                 break;
             }
 
             case 5: {
-                // TODO: getInitFacts Показать стартовую ситуацию
+                const auto& facts = knowledgeBase->getInitFacts();
+                std::cout<<"СТАРТОВЫЕ ФАКТЫ\n";
+                for (const auto& fact : facts) {
+                    std::cout<<fact.first<<"="<<fact.second<<std::endl;
+                }
                 break;
             }
 
