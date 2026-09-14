@@ -7,6 +7,11 @@
 #include "engine/ForwardChainer.hpp"
 #include "engine/ReadChoice.hpp"
 
+#define BOLD    "\033[1m"
+#define GREEN   "\033[32m"
+#define YELLOW  "\033[33m"
+#define RED     "\033[31m"
+#define RESET   "\033[0m"
 
 // Выбор объекта и его значения. Возвращает собранный факт.
 db::Fact readFact(db::KnowledgeBase& kb) {
@@ -89,7 +94,7 @@ int main() {
     engine::ForwardChainer chainer(*knowledgeBase, workingMemory);
 
     while (true) {
-        std::cout << "\n=== Экспертная система ===\n"
+        std::cout << GREEN <<"\n=== Экспертная система ===\n"
                   << "1. Показать правила\n"
                   << "2. Добавить правило\n"
                   << "3. Изменить правило\n"
@@ -128,8 +133,6 @@ int main() {
 
             case 3: {
                 // "3. Изменить правило\n"
-                // TODO: дописать kb.save(), показать правила, спросить id,
-                // собрать новое правило, knowledgeBase->replaceRule(id, rule)
                 const auto& list = knowledgeBase->getRules();
                 for (const auto& rule : list)
                     std::cout << rule.m_id << ". " << toString(rule) << "\n";

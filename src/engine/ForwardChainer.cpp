@@ -25,6 +25,10 @@ namespace engine {
                         }
                         // иначе противоречий нет
                     } else {
+                        if (m_unknown.count(condition.m_object) > 0) {
+                            dead = true;          // ответа уже не будет, правило не сработает
+                            break;
+                        }
                         if (m_unknown.count(condition.m_object) == 0 && m_kb.getObjects().at(condition.m_object).m_prompt != "")
                             unknowns.push_back(condition.m_object);
                     }
@@ -57,6 +61,7 @@ namespace engine {
         }
 
         void ForwardChainer::run() {
+            m_unknown.clear();
             const auto& ruleList = m_kb.getRules();
             while(true) {
                 while(true) {
