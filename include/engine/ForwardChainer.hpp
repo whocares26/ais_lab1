@@ -10,8 +10,10 @@
 namespace engine {
     class ForwardChainer {
     public:
-        ForwardChainer(const db::KnowledgeBase& kb, db::WorkingMemory& wm);
+        ForwardChainer(const db::KnowledgeBase& kb, db::WorkingMemory& wm) : m_kb(kb), m_wm(wm) {}
         void run();
+        std::string selectQuestion(const std::vector<db::Rule>& rules) const;
+        bool askUser(const std::string& objName);
     private:
         const db::KnowledgeBase& m_kb;
         db::WorkingMemory& m_wm;

@@ -17,6 +17,8 @@ FetchContent_MakeAvailable(nlohmann_json)
 add_executable(${PROJECT_NAME}
     example/main.cpp
     src/db/KnowledgeBase.cpp
+    src/db/WorkingMemory.cpp
+    src/engine/ForwardChainer.cpp
 )
 
 target_include_directories(${PROJECT_NAME} PRIVATE include)

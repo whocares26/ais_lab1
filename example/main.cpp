@@ -3,22 +3,10 @@
 #include <string>
 #include <vector>
 #include "db/KnowledgeBase.hpp"
+#include "db/WorkingMemory.hpp"
+#include "engine/ForwardChainer.hpp"
+#include "engine/ReadChoice.hpp"
 
-// Чтение номера пункта из диапазона [min, max].
-// Читает строку целиком, поэтому буфер всегда остаётся чистым.
-int readChoice(int min, int max) {
-    while (true) {
-        std::cout << "Ваш выбор: ";
-        std::string line;
-        std::getline(std::cin, line);
-        try {
-            int value = std::stoi(line);
-            if (value >= min && value <= max)
-                return value;
-        } catch (...) {}
-        std::cout << "Ожидается число от " << min << " до " << max << "\n";
-    }
-}
 
 // Выбор объекта и его значения. Возвращает собранный факт.
 db::Fact readFact(db::KnowledgeBase& kb) {
@@ -97,6 +85,8 @@ int main() {
         std::cerr << "Ошибка чтения базы знаний\n";
         return 1;
     }
+    db::WorkingMemory workingMemory(*knowledgeBase);
+    engine::ForwardChainer chainer(*knowledgeBase, workingMemory);
 
     while (true) {
         std::cout << "\n=== Экспертная система ===\n"
@@ -172,7 +162,7 @@ int main() {
             }
 
             case 4: {
-                for (const auto& rule : knowledgeBase->getRules();)
+                for (const auto& rule : knowledgeBase->getRules())
                     std::cout << rule.m_id << ". " << toString(rule) << "\n";
                 int id = -1; 
                 while (knowledgeBase->findRule(id) == nullptr) {
@@ -199,11 +189,26 @@ int main() {
             }
 
             case 6: {
-                // TODO: db::WorkingMemory wm(knowledgeBase->getInitFacts());
-                //       engine::ForwardChainer chainer(*knowledgeBase, wm);
-                //       chainer.run();
-                //       печать рабочей БД и блока "Заключение"
-                break;
+                workingMemory.clear();
+                chainer.run();
+                std::cout << "\n=== Рабочая база данных ===\n";
+                for (const auto& obj : workingMemory.getMemory())
+                    for (const auto& val : obj.second)
+                        std::cout << obj.first << " = " << val << "\n";
+                std::cout << "\n=== Заключение ===\n";
+                bool any = false;
+                for (const auto& goal : knowledgeBase->getGoalObjects()) {
+                    const auto& mem = workingMemory.getMemory();
+                    auto it = mem.find(goal);
+                    if (it == mem.end()) continue;          // цель не выведена
+                    any = true;
+                    for (const auto& val : it->second)
+                        std::cout << goal << " = " << val << "\n";
+                }
+                if (!any) {
+                    std::cout << "Заключение не получено: недостаточно данных\n";
+                }
+                break;               
             }
 
             case 0:
