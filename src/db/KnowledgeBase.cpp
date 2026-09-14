@@ -16,7 +16,6 @@ namespace db {
         try {
             json data = json::parse(file);
             file.close();
-            std::string domain = data["domain"];
             m_goal_objects = data["goal_objects"].get<std::vector<std::string>>();
             m_objects = data["objects"].get<std::unordered_map<std::string, Object>>();
             m_initial_facts = data["initial_facts"].get<std::unordered_map<std::string, std::string>>();
@@ -61,5 +60,26 @@ namespace db {
 
         values.push_back(value);
         return save();
+    }
+    bool KnowledgeBase::save() const {
+        using json = nlohmann::json;
+        std::ofstream file(db_path);
+        if (!file.is_open()) {
+            return false;
+        }
+        try {
+            json data;
+            data["rules"] = m_rules;
+            data["goal_objects"] = m_goal_objects;
+            data["initial_facts"] = m_initial_facts;
+            data["objects"] = m_objects;
+            
+            file << data.dump(4);
+            file.close();
+        } catch(const std::exception& e) {
+            std::cout<<e.what()<<std::endl;
+            return false;
+        }
+        return true;
     }
 }

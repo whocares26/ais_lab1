@@ -3,6 +3,7 @@
 #include <vector>
 #include "db/Fact.hpp"
 #include <nlohmann/json.hpp>
+
 namespace db {
     struct Rule {
         std::vector<Fact> m_condition;
@@ -24,5 +25,13 @@ namespace db {
         j.at("id").get_to(rule.m_id);
         j.at("if").get_to(rule.m_condition);
         j.at("then").get_to(rule.m_result);
+    }
+
+    inline void to_json(nlohmann::json& j, const Rule& rule) {
+        j = nlohmann::json {
+            {"id", rule.m_id},
+            {"if", rule.m_condition},
+            {"then", rule.m_result}
+        };
     }
 }

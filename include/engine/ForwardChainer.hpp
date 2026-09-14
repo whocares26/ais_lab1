@@ -2,7 +2,7 @@
 #include <string>
 #include <vector>
 #include <unordered_map>
-#include "db/bRule.hpp"
+#include "db/Rule.hpp"
 #include "db/Object.hpp"
 #include "db/KnowledgeBase.hpp"
 #include "db/WorkingMemory.hpp"

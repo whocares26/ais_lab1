@@ -15,4 +15,11 @@ namespace db {
         j.at("object").get_to(fact.m_object);
         j.at("value").get_to(fact.m_value);
     }
+    
+    inline void to_json(nlohmann::json& j, const Fact& fact) {
+        j = nlohmann::json {
+            {"object", fact.m_object},
+            {"value", fact.m_value}
+        };
+    }
 }
