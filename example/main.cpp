@@ -6,12 +6,7 @@
 #include "db/WorkingMemory.hpp"
 #include "engine/ForwardChainer.hpp"
 #include "engine/ReadChoice.hpp"
-
-#define BOLD    "\033[1m"
-#define GREEN   "\033[32m"
-#define YELLOW  "\033[33m"
-#define RED     "\033[31m"
-#define RESET   "\033[0m"
+#include "engine/Colors.hpp"
 
 // Выбор объекта и его значения. Возвращает собранный факт.
 db::Fact readFact(db::KnowledgeBase& kb) {
@@ -29,16 +24,16 @@ db::Fact readFact(db::KnowledgeBase& kb) {
     int input = readChoice(1, names.size() + 1);
 
     if (input == names.size() + 1) {
-        std::cout << "Введите имя объекта: ";
+        std::cout << GREEN << "Введите имя объекта: " << RESET;
         std::getline(std::cin, objName);
         while (objName.empty()) {
-            std::cout << "Имя не может быть пустым. Введите имя объекта: ";
+            std::cout << RED << "Имя не может быть пустым. " << GREEN << "Введите имя объекта: " << RESET;
             std::getline(std::cin, objName);
         }
 
         db::Object newObj;
 
-        std::cout << "Введите текст вопроса (prompt): ";
+        std::cout << GREEN << "Введите текст вопроса (prompt): " << RESET;
         std::getline(std::cin, newObj.m_prompt);
 
         std::cout << "Может ли объект иметь несколько значений одновременно?\n"
@@ -46,7 +41,7 @@ db::Fact readFact(db::KnowledgeBase& kb) {
                   << "2. Нет\n";
         newObj.m_multi = (readChoice(1, 2) == 1);
 
-        std::cout << "Введите допустимые значения (пустая строка — конец ввода):\n";
+        std::cout << GREEN << "Введите допустимые значения (пустая строка — конец ввода):" << RESET << "\n";
         while (true) {
             std::string value;
             std::getline(std::cin, value);
@@ -56,7 +51,7 @@ db::Fact readFact(db::KnowledgeBase& kb) {
         }
 
         if (!kb.addObject(objName, newObj)) {
-            std::cout << "Объект с таким именем уже существует, используется существующий\n";
+            std::cout << YELLOW << "Объект с таким именем уже существует, используется существующий" << RESET << "\n";
         }
     } else {
         objName = names[input - 1];
@@ -72,11 +67,11 @@ db::Fact readFact(db::KnowledgeBase& kb) {
     int valueChoice = readChoice(1, obj.m_values.size() + 1);
 
     if (valueChoice == obj.m_values.size() + 1) {
-        std::cout<<"Введите новое значение: ";
+        std::cout << GREEN << "Введите новое значение: " << RESET;
         std::string val;
         std::getline(std::cin, val);
         if (!kb.addValue(objName, val)) {
-            std::cout<<"Ошибка добавления значения!\n";
+            std::cout << RED << "Ошибка добавления значения!" << RESET << "\n";
         }
         return {objName, val};
     }
@@ -94,7 +89,7 @@ int main() {
     engine::ForwardChainer chainer(*knowledgeBase, workingMemory);
 
     while (true) {
-        std::cout << GREEN <<"\n=== Экспертная система ===\n"
+        std::cout << CYAN << BOLD << "\n=== Экспертная система ===" << RESET << "\n"
                   << "1. Показать правила\n"
                   << "2. Добавить правило\n"
                   << "3. Изменить правило\n"
@@ -114,7 +109,7 @@ int main() {
             case 2: {
                 db::Rule rule;
 
-                std::cout << "ВВОД УСЛОВИЯ\n";
+                std::cout << YELLOW << BOLD << "ВВОД УСЛОВИЯ" << RESET << "\n";
                 while (true) {
                     rule.m_condition.push_back(readFact(*knowledgeBase));
                     std::cout << "Нужен ли ещё факт в условие?\n"
@@ -123,10 +118,10 @@ int main() {
                     if (readChoice(1, 2) == 2)
                         break;
                 }
-                std::cout << "ВВОД ЗАКЛЮЧЕНИЯ\n";
+                std::cout << YELLOW << BOLD << "ВВОД ЗАКЛЮЧЕНИЯ" << RESET << "\n";
                 rule.m_result = readFact(*knowledgeBase);
                 if (!knowledgeBase->addRule(rule)) {
-                    std::cerr<<"Ошибка при добавлении правила!";
+                    std::cerr << RED << "Ошибка при добавлении правила!" << RESET;
                 }
                 break;
             }
@@ -136,18 +131,18 @@ int main() {
                 const auto& list = knowledgeBase->getRules();
                 for (const auto& rule : list)
                     std::cout << rule.m_id << ". " << toString(rule) << "\n";
-                int id = -1; 
+                int id = -1;
                 while (knowledgeBase->findRule(id) == nullptr) {
-                    std::cout << "Введите ID правила: ";
+                    std::cout << GREEN << "Введите ID правила: " << RESET;
                     std::string line;
                     std::getline(std::cin, line);
                     try { id = std::stoi(line); } catch (...) { id = -1; }
                     if (knowledgeBase->findRule(id) == nullptr)
-                        std::cout << "Нет правила с таким ID\n";
+                        std::cout << RED << "Нет правила с таким ID" << RESET << "\n";
                 }
 
                 db::Rule rule;
-                std::cout << "ВВОД УСЛОВИЯ\n";
+                std::cout << YELLOW << BOLD << "ВВОД УСЛОВИЯ" << RESET << "\n";
                 while (true) {
                     rule.m_condition.push_back(readFact(*knowledgeBase));
                     std::cout << "Нужен ли ещё факт в условие?\n"
@@ -156,37 +151,37 @@ int main() {
                     if (readChoice(1, 2) == 2)
                         break;
                 }
-                std::cout << "ВВОД ЗАКЛЮЧЕНИЯ\n";
+                std::cout << YELLOW << BOLD << "ВВОД ЗАКЛЮЧЕНИЯ" << RESET << "\n";
                 rule.m_result = readFact(*knowledgeBase);
                 if (!knowledgeBase->replaceRule(id, rule)) {
-                    std::cerr<<"Ошибка при изменении правила!";
-                }       
+                    std::cerr << RED << "Ошибка при изменении правила!" << RESET;
+                }
                 break;
             }
 
             case 4: {
                 for (const auto& rule : knowledgeBase->getRules())
                     std::cout << rule.m_id << ". " << toString(rule) << "\n";
-                int id = -1; 
+                int id = -1;
                 while (knowledgeBase->findRule(id) == nullptr) {
-                    std::cout << "Введите ID правила: ";
+                    std::cout << GREEN << "Введите ID правила: " << RESET;
                     std::string line;
                     std::getline(std::cin, line);
                     try { id = std::stoi(line); } catch (...) { id = -1; }
                     if (knowledgeBase->findRule(id) == nullptr)
-                        std::cout << "Нет правила с таким ID\n";
+                        std::cout << RED << "Нет правила с таким ID" << RESET << "\n";
                 }
                 if (!knowledgeBase->removeRule(id)) {
-                    std::cout <<"Ошибка при удалении правила по ID\n";
+                    std::cout << RED << "Ошибка при удалении правила по ID" << RESET << "\n";
                 }
                 break;
             }
 
             case 5: {
                 const auto& facts = knowledgeBase->getInitFacts();
-                std::cout<<"СТАРТОВЫЕ ФАКТЫ\n";
+                std::cout << YELLOW << BOLD << "СТАРТОВЫЕ ФАКТЫ" << RESET << "\n";
                 for (const auto& fact : facts) {
-                    std::cout<<fact.first<<"="<<fact.second<<std::endl;
+                    std::cout << fact.first << "=" << fact.second << std::endl;
                 }
                 break;
             }
@@ -194,11 +189,12 @@ int main() {
             case 6: {
                 workingMemory.clear();
                 chainer.run();
-                std::cout << "\n=== Рабочая база данных ===\n";
+
+                std::cout << CYAN << BOLD << "\n=== Рабочая база данных ===" << RESET << "\n";
                 for (const auto& obj : workingMemory.getMemory())
                     for (const auto& val : obj.second)
                         std::cout << obj.first << " = " << val << "\n";
-                std::cout << "\n=== Заключение ===\n";
+                std::cout << CYAN << BOLD << "\n=== Заключение ===" << RESET << "\n";
                 bool any = false;
                 for (const auto& goal : knowledgeBase->getGoalObjects()) {
                     const auto& mem = workingMemory.getMemory();
@@ -209,9 +205,9 @@ int main() {
                         std::cout << goal << " = " << val << "\n";
                 }
                 if (!any) {
-                    std::cout << "Заключение не получено: недостаточно данных\n";
+                    std::cout << YELLOW << "Заключение не получено: недостаточно данных" << RESET << "\n";
                 }
-                break;               
+                break;
             }
 
             case 0:
